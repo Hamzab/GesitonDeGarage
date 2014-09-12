@@ -1,0 +1,5 @@
+c:\users\hamza\documents\visual studio 2013\Projects\GestionDeGarage\BLL\obj\Debug\BLL.csprojResolveAssemblyReference.cache
+c:\users\hamza\documents\visual studio 2013\Projects\GestionDeGarage\BLL\bin\Debug\BLL.dll
+c:\users\hamza\documents\visual studio 2013\Projects\GestionDeGarage\BLL\bin\Debug\BLL.pdb
+c:\users\hamza\documents\visual studio 2013\Projects\GestionDeGarage\BLL\obj\Debug\BLL.dll
+c:\users\hamza\documents\visual studio 2013\Projects\GestionDeGarage\BLL\obj\Debug\BLL.pdb

@@ -1,0 +1,7 @@
+c:\users\hamza\documents\visual studio 2013\Projects\GestionDeGarage\DAL\bin\Debug\DAL.dll
+c:\users\hamza\documents\visual studio 2013\Projects\GestionDeGarage\DAL\bin\Debug\DAL.pdb
+c:\users\hamza\documents\visual studio 2013\Projects\GestionDeGarage\DAL\obj\Debug\DAL.csprojResolveAssemblyReference.cache
+c:\users\hamza\documents\visual studio 2013\Projects\GestionDeGarage\DAL\obj\Debug\DAL.dll
+c:\users\hamza\documents\visual studio 2013\Projects\GestionDeGarage\DAL\obj\Debug\DAL.pdb
+c:\users\hamza\documents\visual studio 2013\Projects\GestionDeGarage\DAL\bin\Debug\BLL.dll
+c:\users\hamza\documents\visual studio 2013\Projects\GestionDeGarage\DAL\bin\Debug\BLL.pdb
