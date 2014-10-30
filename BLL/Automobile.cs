@@ -35,7 +35,7 @@ namespace BLL
         }
         public override string ToString()
         {
-            return "immatriculation "+this.Immatriculation +" annee "+this.Annee;
+            return  this.Immatriculation;
         }
 
         public void afficher()

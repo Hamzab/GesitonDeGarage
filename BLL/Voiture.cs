@@ -40,12 +40,10 @@ namespace BLL
         }
         public override string ToString()
         {
-            return base.ToString()+" coulour "+coulour+" marque "+marque+" type voiture "+typeV;
+            return base.ToString() +" "+ marque;
+             
         }
 
-        public void afficher()
-        {
-            Console.WriteLine(ToString());
-        }
+
     }
 }

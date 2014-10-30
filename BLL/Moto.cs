@@ -35,12 +35,10 @@ namespace BLL
 
        public override string ToString()
        {
-           return base.ToString()+" Cylindre "+Cylindre+" vitesse maximum "+VitesseMax;
+           return base.ToString() +" "+ Cylindre;
+            
        }
       
-       public void afficher()
-       {
-           Console.WriteLine(ToString());
-       }
+
     }
 }

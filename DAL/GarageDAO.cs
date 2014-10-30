@@ -5,38 +5,48 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using BLL;
-
+using Finisar.SQLite;
 namespace GUI
 {
+
   public  class GarageDAO
     {
+
+      
+            // We use these three SQLite objects:
+             
+            SQLiteCommand sqlite_cmd;
+            SQLiteConnection sqlite_conn = new SQLiteConnection("Data Source=database.db;Version=3;New=False;Compress=True;");
+            SQLiteDataReader sqlite_datareader;
+
+            // create a new database connection:
+
         //ajouter voiture
-        public bool ajouterVoiture(Voiture v)
+      
+      public bool ajouterVoiture(Voiture v)
         {
 
-            string connexionString = @"Data source=hamza-pc;Initial catalog=GarageHamza; Trusted_Connection=True;";
-            SqlConnection cnx = new SqlConnection(connexionString);
-            
             try
             {
                
-                cnx.Open();
+                sqlite_conn.Open();
+
+       
+                sqlite_cmd = sqlite_conn.CreateCommand();
+
+        
                 
                 string req = "Insert Into Automobile(Annee, Immatriculation, Coulour, Marque, TypeV, AutoMoto) Values (" + v.Annee + ", '" + v.Immatriculation + "', '" + v.Coulour + "', '" + v.Marque + "', '" + v.TypeV + "', 'True');";
-                
-                SqlCommand cmd = new SqlCommand(req, cnx);
-                
-                if (cmd.ExecuteNonQuery() > 0)
-                {
-                    cnx.Close();
-                    return true;
-                }
-                else
-                {
-                    
-                    cnx.Close();
-                    return false;
-                }
+
+                 
+
+                // Lets insert something into our new table:
+                sqlite_cmd.CommandText = req;
+
+                sqlite_cmd.ExecuteNonQuery();
+   
+                sqlite_conn.Close();
+                return true;
             }
             catch (Exception)
             {
@@ -48,23 +58,19 @@ namespace GUI
         //ajouter moto
         public bool ajouterMoto(Moto v)
         {
-            string connexionString = @"Data source=hamza-pc;Initial catalog=GarageHamza; Trusted_Connection=True;";
-            SqlConnection cnx = new SqlConnection(connexionString);
+
             try
             {
-                cnx.Open();
-                string req = "Insert Into Automobile(Annee,Immatriculation, Cylindre, VitesseMax, AutoMoto) Values (" + v.Annee + ", '" + v.Immatriculation + "'," + v.Cylindre + "," + v.VitesseMax + ", 'False');";
-                SqlCommand cmd = new SqlCommand(req, cnx);
-                if (cmd.ExecuteNonQuery() > 0)
-                {
-                    cnx.Close();
-                    return true;
-                }
-                else
-                {
-                    cnx.Close();
-                    return false;
-                }
+                sqlite_conn.Open();
+                sqlite_cmd = sqlite_conn.CreateCommand();
+                string req = "Insert Into Automobile(Annee, Immatriculation, Cylindre , VitesseMax, AutoMoto) Values (" + v.Annee + ", '" + v.Immatriculation + "', " + v.Cylindre + ", " + v.VitesseMax + ", 'False');";
+          
+               // Lets insert something into our new table:
+                sqlite_cmd.CommandText = req;
+                sqlite_cmd.ExecuteNonQuery();
+                
+                sqlite_conn.Close();
+                return true;
             }
             catch (Exception)
             {
@@ -77,24 +83,25 @@ namespace GUI
 
         public List<Voiture> getLseVoitures()
         {
+            sqlite_conn.Open();
+            sqlite_cmd = sqlite_conn.CreateCommand();
             List<Voiture> voitures = new List<Voiture>();
-            string connexionString = @"Data source=hamza-pc;Initial catalog=GarageHamza; Trusted_Connection=True;";
-            SqlConnection cnx = new SqlConnection(connexionString);
-                cnx.Open();
-                string req = "select * from Automobile where AutoMoto='True';";
-                SqlCommand cmd = new SqlCommand(req, cnx);
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    Voiture v = new Voiture();
-                    v.Annee = Int32.Parse(reader["Annee"].ToString());
-                    v.Immatriculation=reader["Immatriculation"].ToString();
-                    v.Coulour=reader["Coulour"].ToString();
-                    v.Marque = reader["Marque"].ToString();
-                    v.TypeV = reader["TypeV"].ToString();
-                    voitures.Add(v);
-                }
-                cnx.Close();
+            string req = "select * from Automobile where AutoMoto='True';";
+
+            // Lets insert something into our new table:
+            sqlite_cmd.CommandText = req;
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            while (sqlite_datareader.Read())
+            {
+                Voiture v = new Voiture();
+                v.Annee = Int32.Parse(sqlite_datareader["Annee"].ToString());
+                v.Immatriculation = sqlite_datareader["Immatriculation"].ToString();
+                v.Coulour = sqlite_datareader["Coulour"].ToString();
+                v.Marque = sqlite_datareader["Marque"].ToString();
+                v.TypeV = sqlite_datareader["TypeV"].ToString();
+                voitures.Add(v);
+            }
+            sqlite_conn.Close();
                 return voitures;
 
         }
@@ -102,23 +109,26 @@ namespace GUI
         public List<Moto> getLesMotos()
         {
             List<Moto> motos = new List<Moto>();
-            string connexionString = @"Data source=hamza-pc;Initial catalog=GarageHamza; Trusted_Connection=True;";
-            SqlConnection cnx = new SqlConnection(connexionString);
-            cnx.Open();
+
+
+            sqlite_conn.Open();
+            sqlite_cmd = sqlite_conn.CreateCommand();
             string req = "select * from Automobile where AutoMoto='False';";
-            SqlCommand cmd = new SqlCommand(req, cnx);
-            SqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+
+            // Lets insert something into our new table:
+            sqlite_cmd.CommandText = req;
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            while (sqlite_datareader.Read())
             {
                 Moto v = new Moto();
-                v.Annee = Int32.Parse(reader["Annee"].ToString());
-                v.Immatriculation = reader["Immatriculation"].ToString();
-                v.Cylindre = Int32.Parse(reader["Cylindre"].ToString());
-                v.VitesseMax = Int32.Parse(reader["VitesseMax"].ToString());
-
+                v.Annee = Int32.Parse(sqlite_datareader["Annee"].ToString());
+                v.Immatriculation = sqlite_datareader["Immatriculation"].ToString();
+                v.Cylindre = Int32.Parse(sqlite_datareader["Cylindre"].ToString());
+                v.VitesseMax = Int32.Parse(sqlite_datareader["VitesseMax"].ToString());
+           
                 motos.Add(v);
             }
-            cnx.Close();
+            sqlite_conn.Close();
             return motos;
 
         }
@@ -126,29 +136,33 @@ namespace GUI
         public Voiture getUneVoiture(string immatriculation)
         {
             Voiture v = new Voiture();
-            string connexionString = @"Data source=hamza-pc;Initial catalog=GarageHamza; Trusted_Connection=True;";
-            SqlConnection cnx = new SqlConnection(connexionString);
-            try { 
-            cnx.Open();
-            string req = "select * from Automobile where Immatriculation='" + immatriculation + "' and AutoMoto='True';";
-            SqlCommand cmd = new SqlCommand(req, cnx);
-            SqlDataReader reader = cmd.ExecuteReader();
 
-            while (reader.Read())
+            try
             {
-                v.Annee = Int32.Parse(reader["Annee"].ToString());
-                v.Immatriculation = reader["Immatriculation"].ToString();
-                v.Coulour = reader["Coulour"].ToString();
-                v.Marque = reader["Marque"].ToString();
-                v.TypeV = reader["TypeV"].ToString();
+                sqlite_conn.Open();
+                sqlite_cmd = sqlite_conn.CreateCommand();
+                string req = "select * from Automobile where Immatriculation='" + immatriculation + "' and AutoMoto='True';";
 
-            }
-            cnx.Close();
+
+                sqlite_cmd.CommandText = req;
+                sqlite_datareader = sqlite_cmd.ExecuteReader();
+                while (sqlite_datareader.Read())
+                {
+                    
+                    v.Annee = Int32.Parse(sqlite_datareader["Annee"].ToString());
+                    v.Immatriculation = sqlite_datareader["Immatriculation"].ToString();
+                    v.Coulour = sqlite_datareader["Coulour"].ToString();
+                    v.Marque = sqlite_datareader["Marque"].ToString();
+                    v.TypeV = sqlite_datareader["TypeV"].ToString();
+
+                }
+                sqlite_conn.Close();
             }
             catch (Exception)
             {
                 Console.WriteLine("Erreur dans la requette");
             }
+
             return v;
         }
 
@@ -156,30 +170,32 @@ namespace GUI
         public Moto getUnMoto(string immatriculation)
         {
             Moto m = new Moto();
-            string connexionString = @"Data source=hamza-pc;Initial catalog=GarageHamza; Trusted_Connection=True;";
-            SqlConnection cnx = new SqlConnection(connexionString);
-            try
+            try {
+            sqlite_conn.Open();
+            sqlite_cmd = sqlite_conn.CreateCommand();
+              string req = "select * from Automobile where Immatriculation='" + immatriculation + "' and AutoMoto='False';";
+
+            // Lets insert something into our new table:
+            sqlite_cmd.CommandText = req;
+            sqlite_datareader = sqlite_cmd.ExecuteReader();
+            while (sqlite_datareader.Read())
             {
-                cnx.Open();
-                string req = "select * from Automobile where Immatriculation='" + immatriculation + "' and AutoMoto='False';";
-                SqlCommand cmd = new SqlCommand(req, cnx);
-                SqlDataReader reader = cmd.ExecuteReader();
+             
+                m.Annee = Int32.Parse(sqlite_datareader["Annee"].ToString());
+                m.Immatriculation = sqlite_datareader["Immatriculation"].ToString();
+                m.Cylindre = Int32.Parse(sqlite_datareader["Cylindre"].ToString());
+                m.VitesseMax = Int32.Parse(sqlite_datareader["VitesseMax"].ToString());
 
-                while (reader.Read())
-                {
-                    m.Annee = Int32.Parse(reader["Annee"].ToString());
-                    m.Immatriculation = reader["Immatriculation"].ToString();
-                    m.Cylindre = Int32.Parse(reader["Cylindre"].ToString());
-                    m.VitesseMax = Int32.Parse(reader["VitesseMax"].ToString());
-                   
-
-                }
-                cnx.Close();
+                
             }
+            sqlite_conn.Close();
+  }
             catch (Exception)
             {
                 Console.WriteLine("Erreur dans la requette");
             }
+
+       
             return m;
         }
 
@@ -188,23 +204,16 @@ namespace GUI
 
         public bool modifierVoiture(string immatriculation, Voiture v)
         {
-            List<Voiture> voitures = new List<Voiture>();
-            string connexionString = @"Data source=hamza-pc;Initial catalog=GarageHamza; Trusted_Connection=True;";
-            SqlConnection cnx = new SqlConnection(connexionString);
-            try { 
-            cnx.Open();
-            string req = "update Automobile set Annee=" + v.Annee + ", Coulour='" + v.Coulour + "', Marque='" + v.Marque + "', TypeV='" + v.TypeV + "'  where Immatriculation='"+immatriculation+"' and AutoMoto='True';";
-            SqlCommand cmd = new SqlCommand(req, cnx);
-            if (cmd.ExecuteNonQuery() > 0)
-            {
-                cnx.Close();
-                return true;
-            }
-            else
-            {
-                cnx.Close();
+            try {
+
+                sqlite_conn.Open();
+                sqlite_cmd = sqlite_conn.CreateCommand();
+                string req = "update Automobile set Annee=" + v.Annee + ", Coulour='" + v.Coulour + "', Marque='" + v.Marque + "', TypeV='" + v.TypeV + "'  where Immatriculation='"+immatriculation+"' and AutoMoto='True';";
+                sqlite_cmd.CommandText = req;
+                sqlite_cmd.ExecuteNonQuery();
+                sqlite_conn.Close();
                 return false;
-            }
+            
             }
             catch (Exception)
             {
@@ -215,29 +224,24 @@ namespace GUI
 
         public bool modifierMoto(string immatriculation, Moto m)
         {
-            List<Voiture> voitures = new List<Voiture>();
-            string connexionString = @"Data source=hamza-pc;Initial catalog=GarageHamza; Trusted_Connection=True;";
-            SqlConnection cnx = new SqlConnection(connexionString);
+
             try
             {
-                cnx.Open();
+
+                sqlite_conn.Open();
+                sqlite_cmd = sqlite_conn.CreateCommand();
                 string req = "update Automobile set Annee=" + m.Annee + ", Cylindre=" + m.Cylindre + ", VitesseMax=" + m.VitesseMax + "  where Immatriculation='" + immatriculation + "' and AutoMoto='False';";
-                SqlCommand cmd = new SqlCommand(req, cnx);
-                if (cmd.ExecuteNonQuery() > 0)
-                {
-                    cnx.Close();
-                    return true;
-                }
-                else
-                {
-                    cnx.Close();
-                    return false;
-                }
+                sqlite_cmd.CommandText = req;
+                sqlite_cmd.ExecuteNonQuery();
+                sqlite_conn.Close();
+                return false;
+
             }
             catch (Exception)
             {
                 return false;
-            }
+            } 
+            
         }
 
 
@@ -246,35 +250,32 @@ namespace GUI
 
         public bool supprimerAuto(string immatriculation)
         {
-            Voiture v = new Voiture();
-            string connexionString = @"Data source=hamza-pc;Initial catalog=GarageHamza; Trusted_Connection=True;";
-            SqlConnection cnx = new SqlConnection(connexionString);
-            try
-            {
-                cnx.Open();
-                
-                string req = "delete from Automobile where Immatriculation='" + immatriculation + "';";
-                SqlCommand cmd = new SqlCommand(req, cnx);
-                if (cmd.ExecuteNonQuery() > 0)
-                {
-                    Console.WriteLine("bbbbbbbbbbb"); 
-                    cnx.Close();
-                    return true;
-                }
-                else
-                {
-                    cnx.Close();
-                    return false;
-                }
-       
-            }
-            catch (Exception)
-            {
+            
 
-                Console.WriteLine("matricule n'est pas valide");
-                return false;
+          try
+            {
+          
+               sqlite_conn.Open();
+       
+                sqlite_cmd = sqlite_conn.CreateCommand();
+      
+                string req = "delete from Automobile where Immatriculation='" + immatriculation + "';";
+                sqlite_cmd.CommandText = req;
+                sqlite_cmd.ExecuteNonQuery();
+
+                sqlite_conn.Close();
+                return true;
+
             }
-           
+      
+
+          catch (Exception)
+          {
+
+              Console.WriteLine("matricule n'est pas valide");
+              return false;
+          }
+
         }
 
 
